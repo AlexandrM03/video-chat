@@ -1,0 +1,10 @@
+<div
+  class="container flex flex-col justify-center items-center h-screen mx-auto"
+>
+  <h2 class="text-center text-2xl font-bold mb-5">Registration</h2>
+  <app-auth (formSubmit)="register($event)"></app-auth>
+  <div class="flex items-center justify-center mt-4">
+    <span class="mr-2">Already have an account?</span>
+    <a routerLink="/login" class="text-blue-500">Login</a>
+  </div>
+</div>

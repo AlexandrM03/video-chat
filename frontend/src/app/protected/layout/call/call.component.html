@@ -1,0 +1,83 @@
+<!-- <mat-grid-list cols="2" rowHeight="2:1">
+  <mat-grid-tile>
+    <p class="video-description">local:</p>
+    <video #local_video [autoplay]="true" [muted]="true"></video>
+  </mat-grid-tile>
+  <mat-grid-tile>
+    <p class="video-description">remote:</p>
+    <video #received_video [autoplay]="true"></video>
+  </mat-grid-tile>
+</mat-grid-list>
+<button
+  mat-raised-button
+  color="primary"
+  (click)="startLocalVideo()"
+  [disabled]="localVideoActive"
+>
+  Power On Camera
+</button>
+<button
+  mat-raised-button
+  color="primary"
+  (click)="pauseLocalVideo()"
+  [disabled]="!localVideoActive"
+>
+  Power Off Camera
+</button>
+<button
+  mat-raised-button
+  color="primary"
+  (click)="call()"
+  [disabled]="inCall || !localVideoActive"
+>
+  Call
+</button> -->
+
+<div class="h-screen flex flex-col justify-center p-16">
+  <div class="flex-1 relative">
+    <div class="h-4/5 flex items-center justify-center">
+      <video #remoteVideo [autoplay]="true" class="h-full"></video>
+    </div>
+    <div
+      cdkDrag
+      cdkDragBoundary=".relative"
+      class="absolute h-40 cursor-move"
+      style="bottom: 20px; right: 20px"
+    >
+      <video #localVideo [autoplay]="true" [muted]="true" class="h-32"></video>
+    </div>
+  </div>
+  <div class="flex justify-center mt-4 space-x-4 h-1/5">
+    <button
+      mat-icon-button
+      (click)="startLocalVideo()"
+      [disabled]="localVideoActive"
+    >
+      <mat-icon>videocam</mat-icon>
+    </button>
+    <button
+      mat-icon-button
+      (click)="pauseLocalVideo()"
+      [disabled]="!localVideoActive"
+    >
+      <mat-icon>videocam_off</mat-icon>
+    </button>
+    <!-- <button
+      mat-icon-button
+      (click)="call()"
+      [disabled]="inCall || !localVideoActive"
+    >
+      <mat-icon>call</mat-icon>
+    </button> -->
+    <button
+      mat-icon-button
+      (click)="startScreenShare()"
+      [disabled]="localVideoActive"
+    >
+      <mat-icon>screen_share</mat-icon>
+    </button>
+    <button mat-icon-button (click)="hangup()" [disabled]="!inCall">
+      <mat-icon>call_end</mat-icon>
+    </button>
+  </div>
+</div>

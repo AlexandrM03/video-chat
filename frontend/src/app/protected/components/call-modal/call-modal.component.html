@@ -1,0 +1,11 @@
+<div class="flex flex-col items-center justify-center p-4">
+  <h1 class="text-md mb-4">Call from {{ data.caller }}</h1>
+  <div class="flex space-x-4">
+    <button mat-icon-button color="primary" (click)="acceptCall()">
+      <mat-icon>call</mat-icon>
+    </button>
+    <button mat-icon-button color="warn" (click)="rejectCall()">
+      <mat-icon>call_end</mat-icon>
+    </button>
+  </div>
+</div>
