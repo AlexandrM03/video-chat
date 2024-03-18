@@ -5,13 +5,17 @@ import { CallDto } from './dto/call.dto';
 import { PeerDto } from './dto/peer.dto';
 import { AnswerDto } from './dto/answer.dto';
 import { IceCandidateDto } from './dto/ice-candidate.dto';
+import { MessageService } from 'src/message/message.service';
 
 @WebSocketGateway()
 export class WebsocketGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @WebSocketServer() server: Server
     private users: Map<string, Socket> = new Map()
 
-    constructor(private readonly websocketService: WebsocketService) { }
+    constructor(
+        private websocketService: WebsocketService,
+        private messageService: MessageService
+    ) { }
 
     handleConnection(socket: Socket) {
         const username = socket.handshake.query.username as string;
@@ -80,5 +84,14 @@ export class WebsocketGateway implements OnGatewayConnection, OnGatewayDisconnec
         if (receiver) {
             receiver.emit('onHangup')
         }
+    }
+
+    @SubscribeMessage('message')
+    async message(@MessageBody() data: { sender: string, receiver: string, text: string }) {
+        const receiver = this.users.get(data.receiver)
+        if (receiver) {
+            receiver.emit('onMessage', data)
+        }
+        await this.messageService.createMessage(data.sender, data.receiver, data.text)
     }
 }

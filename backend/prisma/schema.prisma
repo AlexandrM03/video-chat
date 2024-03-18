@@ -14,19 +14,19 @@ datasource db {
 }
 
 model User {
-    username  String @id
-    password  String
-    callers   Call[] @relation("CallCaller")
-    receivers Call[] @relation("CallReceiver")
+    username         String    @id
+    password         String
+    sentMessages     Message[] @relation("SentMessages")
+    receivedMessages Message[] @relation("ReceivedMessages")
 }
 
-model Call {
-    id               String    @id @default(uuid())
-    callerUsername   String
-    caller           User      @relation("CallCaller", fields: [callerUsername], references: [username])
+model Message {
+    id               Int    @id @default(autoincrement())
+    text             String
+    sender           User   @relation("SentMessages", fields: [senderUsername], references: [username])
+    senderUsername   String
+    receiver         User   @relation("ReceivedMessages", fields: [receiverUsername], references: [username])
     receiverUsername String
-    receiver         User      @relation("CallReceiver", fields: [receiverUsername], references: [username])
-    startTime        DateTime  @default(now())
-    endTime          DateTime?
-    screenShare      Boolean   @default(false)
+
+    createdAt DateTime @default(now())
 }
