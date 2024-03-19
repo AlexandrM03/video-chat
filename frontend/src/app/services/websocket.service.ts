@@ -4,6 +4,7 @@ import { CallDto } from '../dto/call.dto';
 import { PeerDto } from '../dto/peer.dto';
 import { AnswerDto } from '../dto/answer.dto';
 import { IceCandidateDto } from '../dto/ice-candidate.dto';
+import { MessageDto } from '../dto/message.dto';
 
 @Injectable({
     providedIn: 'root'
@@ -93,5 +94,14 @@ export class WebsocketService {
 
     onHangup() {
         return this.socket.fromEvent('onHangup');
+    }
+
+    // Chat
+    sendMessage(data: MessageDto) {
+        this.socket.emit('message', data);
+    }
+
+    onMessage() {
+        return this.socket.fromEvent<MessageDto>('onMessage');
     }
 }

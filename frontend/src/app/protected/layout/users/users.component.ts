@@ -5,12 +5,12 @@ import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDialog } from '@angular/material/dialog';
 import { CallModalComponent } from '../../components/call-modal/call-modal.component';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 
 @Component({
     selector: 'app-users',
     standalone: true,
-    imports: [CommonModule, MatTableModule, MatIconModule],
+    imports: [CommonModule, MatTableModule, MatIconModule, RouterModule],
     templateUrl: './users.component.html',
     styleUrl: './users.component.css'
 })
