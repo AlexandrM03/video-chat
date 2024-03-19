@@ -143,20 +143,37 @@ export class CallComponent {
     startScreenShare() {
         this.hangup();
 
-        navigator.mediaDevices.getDisplayMedia({
-            video: true
-        }).then(stream => {
-            this.localStream = stream;
-            this.localVideo.nativeElement.srcObject = this.localStream;
+        if ((window as any).getScreenSources && typeof (window as any).getScreenSources === 'function') {
+            // @ts-ignore
+            window.getScreenSources().then((stream: MediaStream) => {
+                this.localStream = stream;
+                this.localVideo.nativeElement.srcObject = this.localStream;
 
-            this.localStream.getTracks().forEach(track => {
-                this.peerConnection?.addTrack(track, this.localStream as MediaStream);
-            });
+                this.localStream.getTracks().forEach(track => {
+                    this.peerConnection?.addTrack(track, this.localStream as MediaStream);
+                });
 
-            this.localVideoActive = true;
+                this.localVideoActive = true;
 
-            this.call();
-        }).catch(e => console.error('Error accessing media devices:', e));
+                this.call();
+            }).catch((e: any) => console.error('Error accessing media devices:', e));
+            return;
+        } else {
+            navigator.mediaDevices.getDisplayMedia({
+                video: true
+            }).then(stream => {
+                this.localStream = stream;
+                this.localVideo.nativeElement.srcObject = this.localStream;
+
+                this.localStream.getTracks().forEach(track => {
+                    this.peerConnection?.addTrack(track, this.localStream as MediaStream);
+                });
+
+                this.localVideoActive = true;
+
+                this.call();
+            }).catch(e => console.error('Error accessing media devices:', e));
+        }
     }
 
     pauseLocalVideo() {

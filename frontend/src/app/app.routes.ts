@@ -11,11 +11,14 @@ import { LayoutComponent } from './protected/layout/layout.component';
 export const routes: Routes = [
     { path: 'register', component: RegisterComponent },
     { path: 'login', component: LoginComponent },
-    { path: '', redirectTo: '/login', pathMatch: 'full' },
+    // { path: 'users', component: UsersComponent, canActivate: [authGuard] },
+    // { path: 'call/:username', component: CallComponent, canActivate: [authGuard] },
+    // { path: 'chats', component: ChatsComponent, canActivate: [authGuard] },
+    // { path: 'chat/:username', component: ChatComponent, canActivate: [authGuard] },
     {
         path: '',
-        component: LayoutComponent,
         canActivate: [authGuard],
+        component: LayoutComponent,
         children: [
             { path: 'users', component: UsersComponent },
             { path: 'call/:username', component: CallComponent },
@@ -23,4 +26,5 @@ export const routes: Routes = [
             { path: 'chat/:username', component: ChatComponent },
         ]
     },
+    { path: '', redirectTo: '/login', pathMatch: 'full' },
 ];
