@@ -13,6 +13,13 @@
     </mat-nav-list>
   </mat-sidenav>
   <mat-sidenav-content>
+    <ng-container *appNotification="showNotification">
+      <div
+        class="absolute top-0 right-0 mt-5 mr-5 bg-blue-500 text-white p-3 rounded-lg shadow-lg"
+      >
+        New message: {{ notificationMessage }}
+      </div>
+    </ng-container>
     <router-outlet></router-outlet>
   </mat-sidenav-content>
 </mat-sidenav-container>

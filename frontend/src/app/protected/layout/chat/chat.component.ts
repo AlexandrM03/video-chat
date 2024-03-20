@@ -6,11 +6,12 @@ import { ActivatedRoute } from '@angular/router';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { MessageStyleDirective } from '../../../directives/attribute/message-style.directive';
 
 @Component({
     selector: 'app-chat',
     standalone: true,
-    imports: [CommonModule, MatSnackBarModule, FormsModule],
+    imports: [CommonModule, MatSnackBarModule, FormsModule, MessageStyleDirective],
     templateUrl: './chat.component.html',
     styleUrl: './chat.component.css'
 })

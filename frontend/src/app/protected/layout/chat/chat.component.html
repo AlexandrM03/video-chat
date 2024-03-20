@@ -14,12 +14,7 @@
     >
       <div
         class="p-2 shadow max-w-sm text-sm"
-        [ngClass]="{
-          'bg-blue-500 text-white': message.senderUsername === username,
-          'bg-gray-200': message.senderUsername !== username,
-          'rounded-tl-lg rounded-bl-lg': message.senderUsername === username,
-          'rounded-tr-lg rounded-br-lg': message.senderUsername !== username
-        }"
+        [appMessageStyle]="message.senderUsername === username"
       >
         {{ message.text }}
       </div>
