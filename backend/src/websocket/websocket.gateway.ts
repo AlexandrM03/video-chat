@@ -87,11 +87,11 @@ export class WebsocketGateway implements OnGatewayConnection, OnGatewayDisconnec
     }
 
     @SubscribeMessage('message')
-    async message(@MessageBody() data: { sender: string, receiver: string, text: string }) {
-        const receiver = this.users.get(data.receiver)
+    async message(@MessageBody() data: { senderUsername: string, receiverUsername: string, text: string }) {
+        const receiver = this.users.get(data.receiverUsername)
         if (receiver) {
             receiver.emit('onMessage', data)
         }
-        await this.messageService.createMessage(data.sender, data.receiver, data.text)
+        await this.messageService.createMessage(data.senderUsername, data.receiverUsername, data.text)
     }
 }

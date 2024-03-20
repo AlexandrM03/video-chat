@@ -26,8 +26,12 @@ export class MessageService {
         });
 
         const chats = [];
+        const groupedMessages = new Map();
+
         for (const message of latestMessages) {
             const { senderUsername, receiverUsername, _max: { createdAt } } = message;
+            const otherParticipant = senderUsername === username ? receiverUsername : senderUsername;
+
             const latestMessage = await this.prisma.message.findFirst({
                 where: {
                     senderUsername,
@@ -36,27 +40,37 @@ export class MessageService {
                 }
             });
 
-            const otherParticipant = senderUsername === username ? receiverUsername : senderUsername;
+            if (!groupedMessages.has(otherParticipant)) {
+                groupedMessages.set(otherParticipant, latestMessage);
+            } else {
+                const existingMessage = groupedMessages.get(otherParticipant);
+                if (existingMessage.createdAt < latestMessage.createdAt) {
+                    groupedMessages.set(otherParticipant, latestMessage);
+                }
+            }
+        }
 
+        groupedMessages.forEach((latestMessage, otherParticipant) => {
             chats.push({
                 otherParticipant,
                 latestMessage
             });
-        }
+        });
 
         return chats;
     }
 
-
     async getMessagesBetweenUsers(senderUsername: string, receiverUsername: string) {
         return await this.prisma.message.findMany({
             where: {
-                AND: [
+                OR: [
                     {
-                        senderUsername
+                        senderUsername,
+                        receiverUsername
                     },
                     {
-                        receiverUsername
+                        senderUsername: receiverUsername,
+                        receiverUsername: senderUsername
                     }
                 ]
             },
