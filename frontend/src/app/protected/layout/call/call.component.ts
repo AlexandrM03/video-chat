@@ -5,6 +5,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { ActivatedRoute } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { DragDropModule } from '@angular/cdk/drag-drop';
+import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
     selector: 'app-call',
@@ -24,7 +26,7 @@ export class CallComponent {
     inCall = false;
     localVideoActive = false;
 
-    constructor(private websocketService: WebsocketService, private route: ActivatedRoute) {
+    constructor(private websocketService: WebsocketService, private route: ActivatedRoute, private snackbar: MatSnackBar) {
         this.receiver = this.route.snapshot.params['username'];
     }
 
@@ -107,7 +109,9 @@ export class CallComponent {
                 });
                 this.inCall = true;
             })
-            .catch(e => console.error('Error creating answer:', e));
+            .catch(e => this.snackbar.open(e.message, 'CloseHOM', {
+                duration: 10000
+            }));
     }
 
     private handleAnswerMessage(msg: RTCSessionDescriptionInit) {
@@ -121,6 +125,9 @@ export class CallComponent {
     }
 
     startLocalVideo() {
+        // Camera.requestPermissions({
+        //     permissions: ['camera']
+        // }).then(() => {
         this.hangup();
 
         navigator.mediaDevices.getUserMedia({
@@ -137,8 +144,41 @@ export class CallComponent {
             this.localVideoActive = true;
 
             this.call();
-        }).catch(e => console.error('Error accessing media devices:', e));
+        }).catch(e => this.snackbar.open(e.message, 'CloseSLV', {
+            duration: 10000
+        }));
+        // }).catch(e => this.snackbar.open(e.message, 'Close', {
+        //     duration: 10000
+        // }));
     }
+
+    // async startLocalVideo() {
+    //     this.hangup();
+
+    //     const image = await Camera.getPhoto({
+    //         quality: 90,
+    //         allowEditing: false,
+    //         resultType: CameraResultType.Uri,
+    //         source: CameraSource.Camera
+    //     });
+
+    //     const video = document.createElement('video');
+    //     video.src = image.webPath!;
+    //     video.autoplay = true;
+    //     video.muted = true;
+    //     video.playsInline = true;
+
+    //     this.localStream = video.srcObject as MediaStream;
+    //     this.localVideo.nativeElement.srcObject = this.localStream;
+
+    //     this.localStream.getTracks().forEach(track => {
+    //         this.peerConnection?.addTrack(track, this.localStream as MediaStream);
+    //     });
+
+    //     this.localVideoActive = true;
+
+    //     this.call();
+    // }
 
     startScreenShare() {
         this.hangup();
@@ -172,7 +212,9 @@ export class CallComponent {
                 this.localVideoActive = true;
 
                 this.call();
-            }).catch(e => console.error('Error accessing media devices:', e));
+            }).catch(e => this.snackbar.open(e.message, 'Close', {
+                duration: 10000
+            }));
         }
     }
 

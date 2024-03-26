@@ -15,7 +15,7 @@ export class WebsocketService {
     constructor() {
         const username = localStorage.getItem('username');
         this.socket = new Socket({
-            url: 'http://localhost:5000', options: {
+            url: 'http://code-pilot.ru:5000', options: {
                 transports: ['websocket'],
                 withCredentials: true,
                 extraHeaders: {

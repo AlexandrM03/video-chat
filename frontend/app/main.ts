@@ -2,6 +2,7 @@ import { app, BrowserWindow, screen, ipcMain } from 'electron';
 import * as path from 'path';
 import * as fs from 'fs';
 import { desktopCapturer } from 'electron';
+import { autoUpdater } from 'electron-updater';
 
 let win: BrowserWindow | null = null;
 const args = process.argv.slice(1),
@@ -18,12 +19,12 @@ function createWindow(): BrowserWindow {
         height: size.height,
         webPreferences: {
             nodeIntegration: true,
-            allowRunningInsecureContent: (serve),
+            allowRunningInsecureContent: true,
             contextIsolation: false,
         },
     });
 
-    win.loadURL('file://' + path.join(__dirname, '../index.html'));
+    // win.loadURL('file://' + path.join(__dirname, '../dist/frontend/browser/index.html'));
 
     win.webContents.on('did-finish-load', async () => {
         try {
@@ -47,8 +48,8 @@ function createWindow(): BrowserWindow {
     } else {
         let pathIndex = './index.html';
 
-        if (fs.existsSync(path.join(__dirname, '../dist/index.html'))) {
-            pathIndex = '../dist/index.html';
+        if (fs.existsSync(path.join(__dirname, '../dist/frontend/browser/index.html'))) {
+            pathIndex = '../dist/frontend/browser/index.html';
         }
 
         const url = new URL(path.join('file:', __dirname, pathIndex));
@@ -63,7 +64,24 @@ function createWindow(): BrowserWindow {
 }
 
 try {
-    app.on('ready', () => setTimeout(createWindow, 400));
+    app.on('ready', () => {
+        setTimeout(createWindow, 400);
+
+        if (!serve) {
+            autoUpdater.checkForUpdatesAndNotify();
+        }
+    });
+
+    autoUpdater.on('update-available', () => {
+        win!.webContents.send('update_available');
+    });
+
+    autoUpdater.on('update-downloaded', () => {
+        win!.webContents.send('update_downloaded');
+        setTimeout(() => {
+            autoUpdater.quitAndInstall();
+        }, 5000);
+    });
 
     app.on('window-all-closed', () => {
         if (process.platform !== 'darwin') {

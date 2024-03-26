@@ -13,6 +13,7 @@ const electron_1 = require("electron");
 const path = require("path");
 const fs = require("fs");
 const electron_2 = require("electron");
+const electron_updater_1 = require("electron-updater");
 let win = null;
 const args = process.argv.slice(1), serve = args.some(val => val === '--serve');
 function createWindow() {
@@ -62,7 +63,21 @@ function createWindow() {
     return win;
 }
 try {
-    electron_1.app.on('ready', () => setTimeout(createWindow, 400));
+    electron_1.app.on('ready', () => {
+        setTimeout(createWindow, 400);
+        if (!serve) {
+            electron_updater_1.autoUpdater.checkForUpdatesAndNotify();
+        }
+    });
+    electron_updater_1.autoUpdater.on('update-available', () => {
+        win.webContents.send('update_available');
+    });
+    electron_updater_1.autoUpdater.on('update-downloaded', () => {
+        win.webContents.send('update_downloaded');
+        setTimeout(() => {
+            electron_updater_1.autoUpdater.quitAndInstall();
+        }, 5000);
+    });
     electron_1.app.on('window-all-closed', () => {
         if (process.platform !== 'darwin') {
             electron_1.app.quit();

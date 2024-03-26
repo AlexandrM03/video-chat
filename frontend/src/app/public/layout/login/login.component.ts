@@ -29,8 +29,15 @@ export class LoginComponent {
                 this.router.navigate(['/users']);
             },
             error: err => {
+                console.log(err);
                 this.snackbar.open(err.error.message, 'Close', {
                     duration: 3000
+                });
+                this.snackbar.open(err, 'Close', {
+                    duration: 10000
+                });
+                this.snackbar.open(err.message, 'Close', {
+                    duration: 10000
                 });
             }
         })
